@@ -1,0 +1,8 @@
+sudo apt install lrzsz
+
+
+uboot> loady $(loadaddr)
+
+
+$USER> sudo sh -c "sz --ymodem Image 1>/dev/ttyUSB0 0</dev/ttyUSB0"
+

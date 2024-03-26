@@ -1,0 +1,216 @@
+ 	
+
+iMX8 Mini Yocto Build Setup:
+
+Install the required packages:
+-------------------------------
+1. sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev
+
+2. sudo apt-get install libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc
+
+sudo apt-get install xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc
+
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev xterm
+
+
+3. sudo apt-get install chrpath texinfo
+
+4. sudo apt-get install u-boot-tools   // for ubuntu 14.04 onward
+
+
+Setting up the repo utility:
+----------------------------
+5. Create a directory for the tool
+   mkdir ~/bin
+   
+6. Download the tool
+   curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+   
+7. Make the tool executable
+   chmod a+x ~/bin/repo
+   
+8. Add the directory to the PATH variable. Add the following line to the .bashrc file to ensure that the ~/bin folder is in your PATH variable.
+   export PATH=~/bin:$PATH
+
+
+Configure Git:
+--------------------
+9. git config --global user.name "Rajeshwar"     <<<< here u use your name 
+10. git config --global user.email "rajeshwar.shinde@acclivistechnologies.com"    <<<< here u use your email id
+11. git config --list
+
+
+Download Yocto Receipes :
+-----------------------------
+12. Create a directory for the downloaded files 
+    mkdir imx-yocto-bsp
+	
+13. cd imx-yocto-bsp
+
+
+ 
+Initialize repo :
+------------------
+14. repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.71-2.2.0.xml
+    repo init -u https://github.com/nxp-imx/imx-manifest.git -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
+
+
+
+
+NOTE : [If you are facing any CA related error in repo init. then only run this command]
+Intialize / update CA certifate : 
+-----------------------------------
+sudo apt-get install apt-transport-https ca-certificates -y
+sudo update-ca-certificates
+
+
+
+Start to download files :
+--------------------------
+15. repo sync
+
+
+
+
+// This will take some time
+// When above process is completed, the source code is checked out into the directory imx-yocto-bsp/sources.
+// You can perform repo synchronization, with the command repo sync, periodically to update to the latest code
+
+
+
+Building Images:
+-------------------
+16. Initialize Build
+      
+    DISTRO=fsl-imx-xwayland MACHINE=imx8mp-lpddr4-evk source imx-setup-release.sh -b build-xwayland
+
+
+After above command follow the instructions given on screen and at the end we will see below msg ->
+
+You can now run 'bitbake <target>'
+
+Common targets are:
+    core-image-minimal
+    meta-toolchain
+    meta-toolchain-sdk
+    adt-installer
+    meta-ide-support
+
+Your build environment has been configured with:
+
+    MACHINE=imx8mm-lpddr4-evk
+    SDKMACHINE=i686
+    DISTRO=fsl-imx-xwayland
+    EULA=
+BSPDIR=
+BUILD_DIR=.
+meta-freescale directory found
+
+
+
+17. To Start the Build run bitbake command - 
+     bitbake imx-image-full 
+    
+
+
+
+
+
+NOTE :- if error come like - Fetcher failure for URL: 'https://www.example.com/'. URL https://www.example.com/ doesn't work.
+                             Please ensure your host's network is configured correctly,
+                             
+        Add below line in -  <build dir>/conf/local.conf
+        
+        #skip connectivity checks
+        CONNECTIVITY_CHECK_URIS = ""
+
+
+
+
+NOTE : - 
+If you need to restart a build in a new terminal window or If laptop get restared or terminal gets 
+closed then you need to run the setup-environment script. If you don’t run the setup-environment script you won’t have access
+to needed tools and utilities, such as bitbake.
+
+source setup-environment build_dir  // set up the environment 
+
+To start the Build  run bitbake command - 
+bitbake imx-image-full 
+   
+
+Reference Doc => 
+####################################################################################       
+https://www.nxp.com/docs/en/user-guide/IMX_YOCTO_PROJECT_USERS_GUIDE.pdf
+
+
+
+Preparing an SD/MMC card to boot the Yocto Images ==> 
+
+For a Linux image to be able to run, four separate pieces are needed:
+• Linux OS kernel image (zImage/Image)
+• Device tree file (*.dtb)
+• Bootloader image
+• Root file system (i.e., EXT4)
+
+The Yocto Project build creates an SD card image that can be flashed directly. 
+This is the simplest way to load everything needed onto the card with one command.
+
+An .sdcard image contains all four images properly configured for an SD card
+
+use the following command to copy the SD card image to the SD/MMC card. 
+Change sdx below to match the one used by the SD card.
+
+NOTE [ use dmesg or lsblk or cat /proc/partitions command to check device node assigned 
+to sd-card ]
+
+NOTE : be careful any mistake will corrupt your hard disk. 
+
+
+####################################################################################  
+Steps To Load the SD card image onto the SD card from the linux command line. 
+This will format the appropriate partitions, as well as add U-Boot, the kernel image, 
+and the root filesystem to the card.
+
+Go to => 
+imx-yocto-bsp/build-xwayland/tmp/deploy/images/imx8mm-lpddr4-evk
+
+if this directory contains the '.sdcard' file, execute the following command:
+
+sudo dd if=<YOCTO_IMAGE>-<YOCTO_MACHINE>.sdcard of=/dev/sd[b|c|d|e] bs=1MB && sync
+
+
+
+if this directory contains the '.wiz.bz2' file, execute the following command:
+
+sudo bunzip2 -dkc <image_name>.wic.bz2 | of=/dev/sd[b|c|d|e] bs=1MB && sync
+for e.g. => 
+sudo bunzip2 -dkc imx-image-full-imx8mm-lpddr4-evk.wic.bz2 | of=/dev/sd[b|c|d|e] bs=1MB && sync
+
+####################################################################################
+to compile plugin/element/recepy.
+navigate into the location => imx-yocto-bsp
+
+used command to compile the plugin/element/recepy.
+	bitbake object -c compile
+
+Note: replace object element with respective plugin/element/recepy.
+
+####################################################################################
+Add Chromium Browser
+
+add recepy in to the local.conf file. the recepy is as follow:
+
+IMAGE_INSTALL_append = \
+    "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', ' chromium-ozone-wayland', \
+        bb.utils.contains('DISTRO_FEATURES',     'x11', ' chromium-x11', \
+                                                        '', d), d)}"
+                                                        
+save the local.conf file.
+
+// set up the environment using:
+	source setup-environment build-xwayland
+	
+then run the bitbake command:
+	bitbake imx-image-full 
+ 
+####################################################################################

@@ -1,0 +1,11 @@
+gdb it6510.ko
+add-symbol-file it6510.o <0xff..addr>
+disassemble my_oops_init
+
+list *<0xff..addr + offset>
+
+export ARCH=arm64
+export CROSS_COMPILE=/usr/bin/aarch64-linux-gnu-
+
+echo $XDG_SESSION_TYPE
+/etc/gdm3/custom.conf

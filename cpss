@@ -1,0 +1,7 @@
+dhclient eth2
+cd cpss
+./appDemo762
+
+cpssInitSystem 19,2,0
+CLIexit
+

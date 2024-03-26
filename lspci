@@ -1,0 +1,1 @@
+lspci -nnk | grep -A 3 VGA | grep -E "VGA|driver"

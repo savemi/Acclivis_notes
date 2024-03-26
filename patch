@@ -1,0 +1,21 @@
+git diff --no-index mygit drivers/media/i2c/adv748x/adv748x-core.c > myadv.patch
+# Use our own defconfig instead of the ones provided by default
+FILESEXTRAPATHS_prepend := "${THISDIR}/linux-toradex:"
+ 
+SRC_URI += " \
+    file://defconfig \
+"
+ 
+# Prevent the use of in-tree defconfig
+unset KBUILD_DEFCONFIG
+
+
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+SRC_URI += "file://0001-Frist-commit.patch"
+SRC_URI += "file://0002-Second-commit.patch"
+SRC_URI += "file://0003-last-commit.patch"
+
+
+vi git/drivers/staging/media/imx/Kconfig 
+dbl

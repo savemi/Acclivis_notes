@@ -1,0 +1,27 @@
+gst-launch-1.0 -v v4l2src device=/dev/video2 ! 'video/x-raw, format=ABGR, width=1920,height=1080, framerate=30/1, bitrate=5000'  ! videoconvert ! vpuenc_h264 ! queue ! rtph264pay ! udpsink host=192.168.1.192 port=9001
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-raw,width=1920,height=1080 !  videoconvert !  vpuenc_h264 ! filesink location="output.h264"
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! image/jpeg,width=1920,height=1080,framerate=30/1,format=MJPG ! rtspclientsink location=rtsp://localhost:8554/mystream protocols=tcp
+
+$ gst-launch-1.0 playbin uri=rtsp://192.168.1.192:9099/stream sync=false
+
+
+gst-launch-1.0 videotestsrc is-live=true ! 'video/x-raw,width=1280,height=720,framerate=30/1' ! queue ! x264enc key-int-max=30 bitrate=10000 ! queue ! mpegtsmux alignment=7 ! netbalancer bandwidth=12000 distribution-factor=300  ! udpsink port=3000 host=127.0.0.1 -v
+
+
+gst-variable-rtsp-server -u "v4l2src device=/dev/video2 ! videoconvert ! video/x-raw,width=1920,height=1080,framerate=60/1 ! vpuenc_h264 ! rtph264pay config_interval=1 pt=96 name=pay0 mtu=60000"
+gst-launch-1.0 rtspsrc location=rtsp://192.168.1.192:9099/stream ! rtph264depay ! decodebin ! videoconvert ! autovideosink  sync=false
+
+ffplay -fflags nobuffer -flags low_delay -rtsp_transport tcp -preset ultrafast rtsp://192.168.1.192:9099/stream -tune zerolatency -vf setpts=0 -framedrop 
+
+
+gst-variable-rtsp-server -u "v4l2src device=/dev/video2 ! videoconvert ! video/x-raw,format=ABGR,width=1920,height=1080,framerate=60/1 ! vpuenc_h264 ! video/x-h264,format=ABGR,width=1920,height=1080,framerate=60/1,bitrate=60000 ! rtph264pay config_interval=1 pt=96 name=pay0"
+
+
+gst-variable-rtsp-server -u "v4l2src device=/dev/video2 ! videoconvert ! video/x-raw,format=BGRA,width=1920,height=1080,framerate=160/1 ! queue ! vpuenc_h264 ! video/x-h264,format=BGRA,width=1920,height=1080,framerate=160/1,bitrate=120000,qos=1 ! queue ! rtph264pay config_interval=1 pt=96 name=pay0 sync=false"
+
+
+final->
+
+gst-variable-rtsp-server -u "v4l2src device=/dev/video2 !  video/x-raw,format=BGRA,width=1920,height=1080,framerate=60/1 ! queue ! vpuenc_h264 ! video/x-h264,format=BGRA,width=1920,height=1080,framerate=60/1,bitrate=125000,qos=1 ! queue ! rtph264pay config_interval=1 pt=96 name=pay0 sync=false"

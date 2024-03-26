@@ -1,0 +1,137 @@
+encoding:
+
+ gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! vpuenc tune=zerolatency ! mpegtsmux ! rtpmp2tpay ! udpsink host=192.168.1.102 port=5939 
+decoding: gst-launch-1.0 udpsrc port=5939 caps="application/x-rtp" ! queue ! rtpmp2tdepay ! tsdemux ! queue ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! mpegtsmux ! filesink location=/home/root/record2.mp2ts
+
+GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! x264enc ! mp4mux ! filesink location="/home/root/output.mp4"
+
+
+v4l2-ctl --device=/dev/videoX --streamoff
+
+
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! autovideosink
+ 
+ GST_DEBUG=5 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! autovideosink
+ 
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! autovideosink
+ 
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! filesink location="/home/root/output.mp4"
+ 
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! filesink location="/home/root/output.mp4"
+
+encoding: gst-launch-1.0 v4l2src device="/dev/video0" ! videoconvert ! x264enc tune=zerolatency ! mpegtsmux ! rtpmp2tpay ! udpsink host=127.0.0.1 port=5000
+decoding: gst-launch-1.0 udpsrc port=5000 caps="application/x-rtp" ! rtpmp2tdepay ! tsdemux ! queue ! h264parse ! avdec_h264 ! autovideosink
+
+GST_DEBUG=4 gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw,width=640,height=480,framerate=15/1, format=YUY2" ! videoconvert ! autovideosink
+
+
+v4l2-ctl --device /dev/video1 --set-fmt-video=width=1920,height=1080,pixelformat="NV12" --stream-count=1 --stream-to=MIPIimage.bayer --stream-mmap=5
+
+v4l2-ctl --list-formats-ext -d /dev/video0
+
+v4l2-ctl --device /dev/video0 --stream-mmap --set-fmt-video=width=640,height=480,pixelformat=YUYV --stream-to=frame.raw --stream-count=10 --verbose
+
+v4l2-ctl --device /dev/video0 --stream-mmap --set-fmt-video=width=1920,height=1080,pixelformat=YUYV --stream-to=frame.raw --stream-count=10 --verbose
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw,format=YUYV,width=640,height=480,framerate=14/1' ! waylandsink
+
+----------------------------------
+
+$ v4l2-ctl --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+        Type: Video Capture
+
+        [0]: 'YUYV' (YUYV 4:2:2)
+                Size: Discrete 3840x2160
+
+v4l2-ctl --set-fmt-video=width=3840,height=2160,pixelformat=YUYV --stream-mmap --stream-count=1 --device /dev/video0 --stream-to=data.raw
+
+# RUN THIS ON YOUR IMX EVALUATION BOARD (replace @YOUR_IP@ with your ip address): 
+$ gst-launch-1.0 -v v4l2src device=/dev/video0 ! videoconvert ! videoscale ! videorate ! video/x-raw,framerate=30/1,width=320,height=240 ! vpuenc_h264 ! rtph264pay ! udpsink host=@YOUR_IP@ port=5000
+
+# RUN THIS ON YOUR DEV PC/MAC:
+$ gst-launch-1.0 udpsrc port=5000 !  application/x-rtp ! rtph264depay ! avdec_h264 ! autovideosink
+
+
+encoding:
+
+ gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! vpuenc tune=zerolatency ! mpegtsmux ! rtpmp2tpay ! udpsink host=192.168.1.102 port=5939 
+decoding: gst-launch-1.0 udpsrc port=5939 caps="application/x-rtp" ! queue ! rtpmp2tdepay ! tsdemux ! queue ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! mpegtsmux ! filesink location=/home/root/record2.mp2ts
+
+GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! x264enc ! mp4mux ! filesink location="/home/root/output.mp4"
+
+
+v4l2-ctl --device=/dev/videoX --streamoff
+
+
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video3 ! videoconvert ! autovideosink
+ 
+ GST_DEBUG=5 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! autovideosink
+ 
+  GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video2 ! autovideosink
+ 
+ GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video3 ! videoconvert ! filesink location="output.mp4"
+ 
+  GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! filesink location="/home/root/output.mp4"
+
+encoding: gst-launch-1.0 v4l2src device="/dev/video0" ! videoconvert ! x264enc tune=zerolatency ! mpegtsmux ! rtpmp2tpay ! udpsink host=127.0.0.1 port=5000
+decoding: gst-launch-1.0 udpsrc port=5000 caps="application/x-rtp" ! rtpmp2tdepay ! tsdemux ! queue ! h264parse ! avdec_h264 ! autovideosink
+
+GST_DEBUG=4 gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-rawwidth=640height=480framerate=15/1 format=YUY2" ! videoconvert ! autovideosink
+
+
+v4l2-ctl --set-fmt-video=width=1920height=1080pixelformat='BA81' --stream-count=1 --stream-to=MIPIimage.bayer --stream-mmap=5
+
+v4l2-ctl --list-formats-ext -d /dev/video0
+
+
+v4l2-ctl --device /dev/video3 --stream-mmap --set-fmt-video=width=640height=480pixelformat=YUYV --stream-to=frame.raw --stream-count=10 --verbose
+
+v4l2-ctl --device /dev/video0 --stream-mmap --set-fmt-video=width=1920height=1080pixelformat=YUYV --stream-to=frame.raw --stream-count=10 --verbose
+
+
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-rawformat=YUYVwidth=640height=480framerate=14/1' ! waylandsink
+v4l2-ctl --set-edid=file=1080P50EDID.txt --fix-edid-ch
+
+
+GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video0 ! filesink location="output.raw"
+
+
+//Rajeshwar notes
+
+
+ gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert !  vpuenc_h264  ! filesink location="output3.h264"
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert !  vpuenc_h264  ! filesink location="output3.h264" 
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert !  vpuenc_h264  ! filesink location="output3.h264"
+gst-launch-1.0 v4l2src device=/dev/video0 ! vpuenc_h264 ! videoconvert ! filesink location="output3.yav"
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! vpuenc_h264 ! rtph264pay ! udpsink host=192.168.1.103 port=5001
+
+
+
+
+UYVY - set format of v4l2 device 
+
+GST_DEBUG=3 gst-launch-1.0 v4l2src device=/dev/video2 ! videoconvert ! vpuenc_h264 ! filesink location="output.h264"
+
+ v4l2src device=/dev/video2 ! video/x-raw,width=1920,height=1080 ! vpuenc_h264  ! rtph264pay ! udpsink host=192.168.1.192 port=5000
+
+
+
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! videoconvert ! vpuenc_h264  ! rtph264pay ! udpsink host=192.168.1.192 port=5000
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-raw,width=1920,height=1080 !  videoconvert !  vpuenc_h264 ! filesink location="output.h264"
+
+
+
+/encoding and decoding 
+
+encoding: gst-launch-1.0 v4l2src device="/dev/video2" ! videoconvert ! vpuenc_h264 ! mpegtsmux ! rtpmp2tpay ! udpsink host=192.168.1.192 port=5000
+decoding: gst-launch-1.0 udpsrc port=5000 caps="application/x-rtp" ! rtpmp2tdepay ! tsdemux ! queue ! h264parse ! avdec_h264 ! videoconvert ! autovideosink sync=false

@@ -1,0 +1,38 @@
+bitbake-layers create-layer
+bitbake-layers add-layer
+
+
+PACKAGECONFIG_append_pn-gstreamer1.0-plugins-bad = " opencv"
+IMAGE_INSTALL:append = " gstreamer1.0-plugins-bad-opencv"
+IMAGE_INSTALL:append = " v4l-utils" 
+
+export LC_ALL="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+sudo dpkg-reconfigure locales
+
+
+
+
+   PETALINUX
+================
+
+petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit
+
+bootgen -arch zynqmp -dump ./BOOT.bin //read header files
+bootgen -read BOOT.BIN //read header files
+
+petalinux-package --wic
+
+Build the U-Boot image.
+petalinux-build -c u-boot
+Generate BOOT.BIN using the following command.
+petalinux-package --boot --fsbl <FSBL image> --fpga <FPGA bitstream> --u-boot
+
+
+
+peta qemu
+=========
+
+petalinux-boot --qemu --root --prebuilt 2
+petalinux-boot --qemu --prebuilt 3
+petalinux-boot --qemu --kernel

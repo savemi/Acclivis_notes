@@ -1,0 +1,63 @@
+dprx_irq_training_status_change
+
+it6510_change_video
+
+MIPI_TX_NON_CONTINOUS_CLOCK
+HS_PRE_1T
+
+FIRE_LP_CMD
+
+dprx_irq_training_status_change
+
+it6510_change_video
+
+MIPI_TX_NON_CONTINOUS_CLOCK
+HS_PRE_1T
+
+FIRE_LP_CMD
+
+adv70
+
+3d
+
+100
+
+
+csi
+
+100
+
+3d
+
+
+ov5640
+
+3d
+
+67
+
+VIDEO_IMX_CAPTURE
+imx8-mipi-csi2
+imx-media-csi
+
+microblaze 
+ipus
+zinc soc
+
+./Documentation/usb/gadget_configfs.rst:54:	$ modprobe libcomposite
+./drivers/usb/cdns3/cdnsp-ep0.c:409:		 * by libcomposite.
+./drivers/usb/gadget/Makefile:9:obj-$(CONFIG_USB_LIBCOMPOSITE)	+= libcomposite.o
+./drivers/usb/gadget/Makefile:10:libcomposite-y			:= usbstring.o config.o epautoconf.o
+./drivers/usb/gadget/Makefile:11:libcomposite-y			+= composite.o functions.o configfs.o u_f.o
+
+
+
+port {
+
+                                        endpoint {
+                                                remote-endpoint = <0x5d>;
+                                                phandle = <0x32>;
+                                        };
+                                };
+
+

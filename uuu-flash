@@ -1,0 +1,14 @@
+Switch	SW1101 [D1-D10]	SW1102 [D1-D10]
+eMMC/uSDHC3 (default)	0110110001	0001010100
+MicroSD/SDHC2	0110110010	0001101000
+QSPI NOR Flash	0110xxxxxx	00000x0010
+Serial Download Mode	1010xxxxxx	xxxxxxxxx0
+
+*************************
+To flash->
+
+uuu -b emmc_all imx-boot-imx8mm-lpddr4-evk-sd.bin-flash_evk *.wic.zst
+
+To Detect->
+
+uuu -lsusb

@@ -1,0 +1,225 @@
+
+LDFLAGS += " -L${S}/home/arvind/Downloads/rdf0428-zcu106-vcu-trd-2022-2/apu/vcu_petalinux_bsp/xilinx-vcu-zcu106-v2022.2-final/build/tmp/work/cortexa72-cortexa53-xilinx-linux/vcu-gst-app/1.0-r0/recipe-sysroot/usr/lib/libvcu_gst.so"
+
+
+-lm -L/home/arvind/Downloads/rdf0428-zcu106-vcu-trd-2022-2/apu/vcu_petalinux_bsp/xilinx-vcu-zcu106-v2022.2-final/build/tmp/work/cortexa72-cortexa53-xilinx-linux/vcu-gst-app/1.0-r0/recipe-sysroot/usr/lib
+
+finel project  build 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+	petalinux-build     // (build and genret .bit file)
+	-petalinux-package --boot --force --fsbl /home/arvind/xilinx-zcu106-2022.2/images/linux/zynqmp_fsbl.elf --fpga /home/arvind/xilinx-zcu106-2022.2/images/linux/linux_bd_wrapper.bit --u-boot
+	 -sudo dpkg-reconfigure dash
+	 -sudo gedit /etc/bash.bashrc
+	 - source /home/arvind/petalinux/settings.sh
+ 	 -petalinux-package --boot --force --fsbl 	 							    ./home/arvind/petalinux/xilinx-zcu106-2022.2/images/linux/zynqmp_fsbl.elf --fpga 	 	    ./home/arvind/petalinux/xilinx-zcu106-2022.2/images/linux/system.bit --u-boot
+  	 -petalinux-package --boot –u-boot
+
+
+Copy these two files into the first partition of your SD card. You can do this from your PetaLinux project root directory with the following commands.
+cp images/linux/BOOT.bin /media/BOOT
+cp images/linux/image.ub /media/BOOT
+image.ub
+system.bit
+
+Once your boot files have been copied into the BOOT partition of your SD card, copy the root file system into the second partition, your 'rootfs' partition, with the following command.
+cp images/linux/rootfs.cpio /media/rootfs
+rootfs.cpio
+
+*Note: the paths "/media/BOOT" and "/media/rootfs" may not be where your SD card is mounted, so you should modify the copy command accordingly.
+Once the root file system and boot files have been copied to the two partitions of your SD card run the following PetaLinux command, still from the root directory of the PetaLinux project (also in the second image above).
+petalinux-util --update-sdcard -d /media/nate/ZYBO_BOOT
+
+
+
+use trd to project build
+////////////////////////////////////////////////
+ petalinux-create -t project -s xilinx-vcu-zcu106-v2022.2-final.bsp
+
+ cd xilinx-vcu-zcu106-v2022.2-final
+
+ petalinux-config --get-hw-description=/home/arvind/Downloads/rdf0428-zcu106-vcu-trd-2022-2/pl/prebuild/zcu106_llp2_xv20_nv16/file.xsa
+
+ cd project-spec/meta-user/recipes-bsp/device-tree/files/
+
+ ln -sf vcu_llp2_plddr_hdmi.dtsi system-user.dtsi
+
+ cd ../../../../../
+
+petalinux-build
+
+petalinux-build --sdk
+
+petalinux-package --sysroot
+
+cd images/linux 
+
+petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit
+
+
+identify the serial device :- dmesg |grep tty
+
+
+udc-core : could’t find 
+ echo fe200000.dwc3 > UDC
+
+dmesg | grep configfs
+lsmod | grep gadget
+ls -l /dev/input/by-id/*
+
+
+petalinux-build -c qtbase -x modify
+
+petalinux-build -c qtbase –forcepatchrefresh
+
+petalinux-build -c device-tree -x cleanall
+
+- tar -acf vcu_gst_lib.tar.gz -C vcu_gst_lib ./
+
+sudo tar xvf rootfs.tar.gz -C /media/arvind/root
+
+git clone --mirror https://github.com/Xilinx/vcu_gst_lib.git
+
+tar -acf git2_github.com.Xilinx.vcu_gst_lib.git.tar.gz -C vcu_gst_lib.git ./
+
+tar -tf git2_github.com.Xilinx.vcu_gst_lib.git.tar.gz 
+
+cp git2_github.com.Xilinx.vcu_gst_lib.git.tar.gz /home/amruta/Downloads/rdf0428-zcu106-vcu-trd-2022-2/apu/vcu_petalinux_bsp/xilinx-vcu-zcu106-v2022.2-final/build/downloads/
+
+modetest -M xinl
+
+sudo putty /dev/ttyUSB0 -serial -sercfg 115200,8,n,1,N
+
+
+
+ dtc -I dtb -O dts -f system.dtb -o system.dtsi
+
+sudo sysctl -w fs.inotify.max_user_watches=524288
+
+petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --u-boot u-boot.elf --pmufw pmufw.elf --fpga system.bit
+create project 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+petalinux-create -t project -s /home/arvind/Downloads/xilinx-zcu106-v2022.2-10141622.bsp
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Adding Custom Applications/librarey
+
+    cd
+    cd petalinux/
+    cd  xilinx-zcu106-2022.2/
+    petalinux-config
+    petalinux-config -c rootfs
+    petalinux-build -c vcu_apm_lib_master
+    petalinux-create -t apps --name vcu-apm-lib --template c
+    petalinux-config -c rootfs
+    petalinux-build -c vcu-apm-lib
+
+ adding path :- export PKG_CONFIG_PATH=/home/arvind/xilinx-zcu106-2022.2/project-spec/meta-user/recipes-apps/vcu-video-lib/files/pkgconfig
+- echo $PKG_CONFIG_PATH
+
+petalinux-build -x cleanall
+
+install librarey
+- git clone https://github.com/Xilinx/vcu_video_lib.git
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+xilinx  install comand...
+
+
+    sudo -s
+    mkdir petalinux
+    ls
+    cd Downloads
+    ls
+    mv petalinux-v2022.2-10141622-installer.run /home/arvind/petalinux
+    ls
+    cd 
+    ls
+    cd petalinux/
+    ls
+    chmod +x petalinux-v2022.2-10141622-installer.run
+    ./petalinux-v2022.2-10141622-installer.run./petalinux-v<petalinux-version>-final-installer.run [--log <LOGFILE>] [-d|--dir <INSTALL_DIR>] [options]
+
+     sudo apt-get install iproute2
+sudo apt-get install git
+sudo apt-get install libncurses5-dev
+sudo apt-get install lib32ncurses6
+sudo apt-get install lib32z1
+sudo apt-get install tofrodos iproute2 gawk gcc git make net-tools libncurses5-dev tftpd zlib1g-dev flex bison lib32z1 lib32ncurses6 lib32stdc++6 libselinux1
+
+
+    ./petalinux-v2022.2-10141622-installer.run
+    ls
+    cd 
+    ls
+    cd Downloads/
+    ls
+    tar -xf Xilinx_Vivado_Lab_Lin_2022.2_1014_8888.tar.gz
+    sudo chmod 777 Xilinx_Vivado_Lab_Lin_2022.2_1014_8888
+    ls
+    cd Xilinx_Vivado_Lab_Lin_2022.2_1014_8888
+    ls
+    ./xsetup
+    cd /opt
+    ls
+    mkdir Xilinx
+    cd
+    ls
+    sudo chmod 777 /opt
+    ls
+    cd /opt
+    ls
+    mkdir Xilinx
+    ls
+    sudo chmod 777 Xilinx
+    cd
+    cd Downloads/
+    ls
+    cd Xilinx_Vivado_Lab_Lin_2022.2_1014_8888
+    ls
+    ./xsetup 
+    sudo dpkg-reconfigure dash
+    sudo gedit /etc/bash.bashrc
+    source /home/arvind/petalinx/settings.sh
+    cd
+    ls
+    source /home/arvind/petalinx/settings.sh
+    cd
+    ls
+    cd
+    ls
+    cd petalinux
+    chmod +x ./settings.sh
+    source settings.sh
+    sudo apt-get install libtinfo5
+    source settings.sh
+    echo $PETALINUX
+    petalinux-create -t project -s /home/arvind/Downlods/xilinx-zcu106-v2022.2-10141622.bsp
+    cd
+    petalinux-create -t project -s /home/arvind/Downlods/xilinx-zcu106-v2022.2-10141622.bsp
+    source settings.sh
+    cd petalinux/
+    ls
+    petalinux-create -t project -s /home/arvind/Downlods/xilinx-zcu106-v2022.2-10141622.bsp
+    git clone https://github.com/Digilent/Arty-Z7-old.git
+    petalinux-create -t project -s /home/arvind/Downlods/xilinx-zcu106-v2022.2-10141622.bsp
+    ls
+    cd xilinx-zcu106-2022.2/
+    ls
+    petalinux-config
+    ls
+    cd petalinux
+
+dmesg | grep configf
+ [ 1409.777606] configfs-gadget gadget: adding 'hid'/0000000077fc706e to config 'c'/000000005eb8a83e
+ [ 1565.047604] configfs-gadget gadget: resume
+ [ 1565.047752] configfs-gadget gadget: resume
+ [ 1565.047833] configfs-gadget gadget: high-speed config #1: c
+ [ 1565.053401] configfs-gadget gadget: hidg_set_alt intf:0 alt:0 
+[ 1565.053406] configfs-gadget gadget: Enable IN endpoint FAILED! 
+[ 1565.059224] configfs-gadget gadget: interface 0 (hid/0000000077fc706e) alt 0 --> -22 [ 1565.059226] configfs-gadget gadget: reset config 
+[ 1570.054229] configfs-gadget gadget: resume [ 1570.054359] configfs-gadget gadget: resume
+
+
+

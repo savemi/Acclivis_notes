@@ -1,0 +1,62 @@
+
+tftp commands
+=============
+
+setenv bootcmd 'tftp 0x40400000 zImage; tftp 0x43000000 imx8mm-evk.dtb'
+setenv serverip 192.168.11.1
+setenv ipaddr 192.168.11.10
+setenv netmask 255.255.255.0
+
+
+ping 192.168.11.1 <host is alive>
+
+tftpboot 0x40400000 zImage
+tftpboot 0x43000000 my.dtb
+
+
+setenv bootargs 'console=ttymxc1,115200 root=/dev/mmcblk2p2 rootwait rw'
+booti ${loadaddr} - ${fdt_addr_r}
+load mmc 2:1 ${loadaddr} Image
+laod mmc 2:1 ${fdt_addr} imx8mm-evk.dtb
+
+
+//load mmc 1:2 ${initrd_addr} initramfs.cpio.gz
+//setenv bootargs 'console=ttymxc1,115200 root=/dev/mmcblk2p2 rootwait'
+
+bitbake -c imx-image-full populate_sdk
+
+i2cdetect -y 0
+
+Device     Boot  Start     End Sectors  Size Id Type
+/dev/sdc1  *     16384  186775  170392 83.2M  c W95 FAT32 (LBA)
+/dev/sdc2       196608 9417261 9220654  4.4G 83 Linux
+
+
+dtbs cmd 
+=========
+	..........
+	dts->dtb
+	----------
+
+dtc -I dts -O dtb -f imx8mm-evk.dts -o imx8mm-evk.dtb
+dtc -I dts -O dtb -f imx8mp-evk.dts -o imx8mp-evk.dtb
+dtc -I dts -O dtb -f imx8mp-evk-1080p60.dts -o imx8mp-evk-1080p60.dtb
+
+	----------
+	dtb -> dts
+	----------
+
+dtc -I dtb -O dts -f imx8mm-evk.dtb -o imx8mm-evk.dts
+dtc -I dtb -O dts -f imx8mp-evk.dtb -o imx8mp-evk.dts
+dtc -I dtb -O dts -f imx8mp-evk-1080p60.dtb -o imx8mp-evk-1080p60.dts
+
+modules_install_scp
+===================
+	
+	sudo make modules_install INSTALL_MOD_PATH=~/bin/imx-yocto-bsp/build-xwayland/tmp/work/imx8mm_lpddr4_evk-poky-linux/linux-imx/5.15.71+gitAUTOINC+95448dd0dc-r0/build/MOD
+	tar -cvzf mod.tar.gz MOD
+
+change ownership :-
+================
+	
+	sudo chown -R $USER ~/.blabla

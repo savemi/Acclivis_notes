@@ -1,0 +1,12 @@
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
+
+Super Top microSD card reader (SY-T18)
+
+echo -n "1" > /sys/bus/pci/devices/0000\:04\:00.0/remove
+
+sudo ifconfig lo mtu 100065536
+arp -s 192.168.11.50 00-04-9f-07-24-6d
+
+

@@ -1,0 +1,29 @@
+qemu-system-aarch64 \
+    -machine virt \
+    -cpu cortex-a53 \
+    -m 2G \
+    -kernel Image \
+    -dtb imx8mp-evk-1080p60.dtb \
+    -drive file=rootfs.img,format=raw \
+    -append "root=/dev/vda console=ttyAMA0" \
+    -netdev user,id=net0,hostfwd=tcp::2222-:22 \
+    -device virtio-net-device,netdev=net0
+
+
+
+sudo qemu-system-aarch64 -machine virt -cpu cortex-a53 -m 1G -kernel Image -dtb imx8mp-evk-1080p60.dtb -drive file=rootfs.img,format=raw  -append "root=/dev/mmcblk1p2 console=ttyAMA0" -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device e1000,netdev=mynet0,mac=52:55:00:d1:55:01
+
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-  modules_install INSTALL_MOD_PATH=~/driver/busybox/rootfs
+
+mkfs.ext2 -d rootfs -L rootfs rootfs.img 2G
+
+find . -print0 | cpio --null -ov --format=newc   | gzip -9 > ../initramfs.cpio.gz
+
+qemu-system-aarch64 -M virt -m 1024 -cpu cortex-a53 \
+  -kernel installer-linux \
+  -initrd installer-initrd.gz \
+  -drive if=none,file=hda.qcow2,format=qcow2,id=hd \
+  -device virtio-blk-pci,drive=hd \
+  -netdev user,id=mynet \
+  -device virtio-net-pci,netdev=mynet \
+  -nographic -no-reboot

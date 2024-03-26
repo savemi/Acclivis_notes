@@ -1,0 +1,23 @@
+bin/imx-yocto-bsp/build-xwayland/tmp/work-shared/imx8mm-lpddr4-evk/kernel-source/drivers/media/i2c/adv748x/
+~/bin/imx-yocto-bsp/build-xwayland/tmp/deploy/images/imx8mm-lpddr4-evk
+
+/home/rajeshwar/bin/imx-yocto-bsp/build-xwayland/tmp/work/imx8mm_lpddr4_evk-poky-linux/i2c-mod/0.1-r0/myvl4.ko
+/home/rajeshwar/bin/imx-yocto-bsp/sources/poky/meta/recipes-core/busybox
+
+//ov6540
+
+~/bin/imx-yocto-bsp/build-xwayland/tmp/work-shared/imx8mm-lpddr4-evk/kernel-source$ diff ./drivers/media/platform/mxc/capture/ov5640.c ./drivers/media/i2c/ov5640.c
+
+/home/rajeshwar/bin/imx-yocto-bsp/build-xwayland/tmp/work-shared/imx8mm-lpddr4-evk/kernel-source/drivers/media/platform/mxc/capture
+https://github.com/torvalds/linux/blob/master/drivers/media/i2c/tc358743.c
+/home/rajeshwar/imx/imx-yocto-bsp/build-xwayland/tmp/work/imx8mp_lpddr4_evk-poky-linux/linux-imx/5.15.71+gitAUTOINC+95448dd0dc-r0/build/drivers
+/home/rajeshwar/imx/imx-yocto-bsp/build-xwayland/tmp/work-shared/imx8mp-lpddr4-evk/kernel-source/drivers/staging/media/imx
+
+
+//yocto defconfig path
+
+../sources/meta-imx/meta-bsp/recipes-kernel/linux/linux-imx_5.15.bb
+
+vi ../sources/meta-imx/meta-bsp/recipes-kernel/linux/linux-imx_5.15.bb
+
+xilinx-zcu106-2021.1/build/tmp/deploy/images/zynqmp-generic
