@@ -13,7 +13,7 @@ script: "zsend"
 DEV=/dev/ttyS0
 
 stty -F $DEV 115200
-sz $1 > $DEV < $DEV
+sz --ymodem $1 > $DEV < $DEV
 script: "zrecv"
 
 #!/bin/sh
@@ -21,6 +21,6 @@ script: "zrecv"
 DEV=/dev/ttyS0
 
 stty -F $DEV 115200
-rz > $DEV < $DEV
+rz --ymodem > $DEV < $DEV
 
 
