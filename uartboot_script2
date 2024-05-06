@@ -6,3 +6,21 @@ uboot> loady $(loadaddr)
 
 $USER> sudo sh -c "sz --ymodem Image 1>/dev/ttyUSB0 0</dev/ttyUSB0"
 
+script: "zsend"
+
+#!/bin/sh
+
+DEV=/dev/ttyS0
+
+stty -F $DEV 115200
+sz $1 > $DEV < $DEV
+script: "zrecv"
+
+#!/bin/sh
+
+DEV=/dev/ttyS0
+
+stty -F $DEV 115200
+rz > $DEV < $DEV
+
+
