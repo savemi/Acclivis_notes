@@ -1,3 +1,25 @@
 gst-launch-1.0 -v alsasrc ! wavenc ! filesink location="output.wav"
 
 arecord -D hw:CARD=0,DEV=0 -c 4 -i -f S16_LE -r 48000 --duration=10 out.wav
+
+gst-launch-1.0 -v alsasrc device=hw:1 ! wavenc ! filesink location="output.wav"
+
+arecord -D hw:CARD=0,DEV=0 -c 4 -i -f S16_LE -r 48000 --duration=10 out.wav
+
+pulsesrc device=hw:1 ! audioconvert ! audioresample ! rtpL24pay name=pay1 pt=97 t. pay1.
+
+
+arecord -D plughw:0 --duration=10 -f cd -vv rec7.wav
+
+aplay rec7.wav
+
+
+arecord -f S16_LE -r 16000 -c 1 test.wav
+arecord -f cd -t raw --device=sysdefault | oggenc - -r -o file.ogg
+
+
+ arecord -D plughw:3 --duration=10 -f cd -vv rec7.wav
+
+arecord -D hw:3,0 -f cd -t wav rec.wav
+
+gst-variable-rtsp-server -u "v4l2src device=/dev/video2 ! videoconvert ! video/x-raw,width=1920,height=1080,framerate=30/1 ! vpuenc_h264 ! rtph264pay mtu=60000 name=pay0 pt=96 ! alsasrc device=hw:1,0 ! audioconvert ! audioresample ! rtpL24pay name=pay1 pt=97"
