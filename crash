@@ -1,0 +1,20 @@
+1---->
+
+objdump -dS vmlinux > /tmp/kernel.s
+Open the generated assembly file, /tmp/kernel.s. with a text editor such as vim. Go to unwind_backtrace+0x0/0xf8, i.e. search for the address of unwind_backtrace + the offset. Finally, you have located the problematic part in your source code.
+
+Use gdb:
+
+IMO, an even more elegant option is to use the one and only gdb. Assuming you have the suitable toolchain on your host machine:
+
+Run gdb <path-to-vmlinux>.
+Execute in gdb's prompt: list *(unwind_backtrace+0x10).
+
+
+
+2---->
+
+gdb module.ko
+gdb-> add-symbol-file module.o
+gdb-> disassemble crash_func (note the base address at first line)
+gdb-> list *(base address in above step + offset at  crash_func);
